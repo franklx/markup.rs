@@ -1,4 +1,13 @@
-use std::fmt::Write;
+use std::{borrow::Cow, fmt::Write};
+
+#[cfg(feature = "rust_decimal")]
+use rust_decimal::Decimal;
+
+#[cfg(feature = "chrono")]
+use chrono::NaiveDate;
+
+#[cfg(feature = "time")]
+use time::Date;
 
 pub use markup_proc_macro::{define, new};
 
@@ -184,6 +193,37 @@ impl Render for String {
 }
 
 impl RenderAttributeValue for String {}
+
+impl Render for Cow<'_, str> {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        self.as_ref().render(writer)
+    }
+}
+
+#[cfg(feature = "rust_decimal")]
+impl Render for Decimal {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        writer.write_str(&self.to_string())
+    }
+}
+
+#[cfg(feature = "chrono")]
+impl Render for NaiveDate {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        writer.write_str(&self.to_string())
+    }
+}
+
+#[cfg(feature = "time")]
+impl Render for Date {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        writer.write_str(&self.to_string())
+    }
+}
 
 impl Render for std::fmt::Arguments<'_> {
     #[inline]
