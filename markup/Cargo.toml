@@ -1,6 +1,6 @@
 [package]
 name = "markup"
-version = "0.15.0-frk1"
+version = "0.15.0+frk.1"
 authors = ["Utkarsh Kukreti <utkarshkukreti@gmail.com>"]
 edition = "2021"
 description = "A blazing fast, type-safe template engine for Rust."
@@ -11,6 +11,8 @@ repository = "https://github.com/utkarshkukreti/markup.rs"
 readme = "README.md"
 keywords = ["template", "html", "markup", "pug", "haml"]
 categories = ["template-engine"]
+
+publish = ["elleci"]
 
 [dependencies]
 markup-proc-macro = { path = "../markup-proc-macro", version = "0.15.0" }
