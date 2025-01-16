@@ -262,6 +262,13 @@ tuple_impl! { A B C D E F G H }
 tuple_impl! { A B C D E F G H I }
 tuple_impl! { A B C D E F G H I J }
 
+impl Render for () {
+    #[inline]
+    fn render(&self, _writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        Ok(())
+    }
+}
+
 pub struct DynRender<'a> {
     f: Box<dyn Fn(&mut dyn std::fmt::Write) -> std::fmt::Result + 'a>,
 }
