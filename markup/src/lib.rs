@@ -1,4 +1,4 @@
-use std::{borrow::Cow, fmt::Write};
+use std::fmt::Write;
 
 #[cfg(feature = "rust_decimal")]
 use rust_decimal::Decimal;
@@ -34,14 +34,14 @@ pub trait RenderAttributeValue: Render {
     }
 }
 
-impl<'a, T: Render + ?Sized> Render for &'a T {
+impl<T: Render + ?Sized> Render for &T {
     #[inline]
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
         T::render(self, writer)
     }
 }
 
-impl<'a, T: RenderAttributeValue + ?Sized> RenderAttributeValue for &'a T {
+impl<T: RenderAttributeValue + ?Sized> RenderAttributeValue for &T {
     #[inline]
     fn is_none(&self) -> bool {
         T::is_none(self)
@@ -66,6 +66,32 @@ impl<T: Render + ?Sized> Render for Box<T> {
 }
 
 impl<T: RenderAttributeValue + ?Sized> RenderAttributeValue for Box<T> {
+    #[inline]
+    fn is_none(&self) -> bool {
+        T::is_none(self)
+    }
+
+    #[inline]
+    fn is_true(&self) -> bool {
+        T::is_true(self)
+    }
+
+    #[inline]
+    fn is_false(&self) -> bool {
+        T::is_false(self)
+    }
+}
+
+impl<'a, T: Render + ToOwned + ?Sized> Render for std::borrow::Cow<'a, T> {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        T::render(self, writer)
+    }
+}
+
+impl<'a, T: RenderAttributeValue + ToOwned + ?Sized> RenderAttributeValue
+    for std::borrow::Cow<'a, T>
+{
     #[inline]
     fn is_none(&self) -> bool {
         T::is_none(self)
@@ -130,7 +156,7 @@ impl<T: std::fmt::Display> Render for Raw<T> {
 impl<T: std::fmt::Display> RenderAttributeValue for Raw<T> {}
 
 #[inline]
-pub fn raw(value: impl std::fmt::Display) -> impl Render + RenderAttributeValue {
+pub fn raw(value: impl std::fmt::Display) -> impl RenderAttributeValue {
     Raw(value)
 }
 
@@ -193,13 +219,6 @@ impl Render for String {
 }
 
 impl RenderAttributeValue for String {}
-
-impl Render for Cow<'_, str> {
-    #[inline]
-    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
-        self.as_ref().render(writer)
-    }
-}
 
 #[cfg(feature = "rust_decimal")]
 impl Render for Decimal {

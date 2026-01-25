@@ -1,6 +1,6 @@
 [package]
 name = "markup"
-version = "0.15.0+frk.2"
+version = "0.16.0+frk.2"
 authors = ["Utkarsh Kukreti <utkarshkukreti@gmail.com>"]
 edition = "2021"
 description = "A blazing fast, type-safe template engine for Rust."
@@ -15,7 +15,7 @@ categories = ["template-engine"]
 publish = ["elleci"]
 
 [dependencies]
-markup-proc-macro = { path = "../markup-proc-macro", version = "0.15.0" }
+markup-proc-macro = { path = "../markup-proc-macro", version = "0.16.0" }
 itoa = { version = "1", optional = true }
 rust_decimal = { version = "1", optional = true }
 chrono = { version = "0.4", optional = true }
